@@ -3,15 +3,34 @@
   lib,
   inputs,
   ...
-} @ args: let
+}: let
   radiosondeSrc = inputs.radiosonde-auto-rx;
 
-  inherit (import ./demod.nix (args // {inherit radiosondeSrc;})) mkDemod;
+  mkDemod = {
+    name,
+    basedir,
+    ...
+  } @ args:
+    pkgs.stdenv.mkDerivation (args
+      // {
+        src = "${radiosondeSrc}/${basedir}";
+
+        buildPhase = ''
+          make ${name}
+        '';
+
+        installPhase = ''
+          mkdir -p $out/bin
+          install -Dm744 ${name} $out/bin
+        '';
+
+        meta.mainProgram = name;
+      });
 
   demods = let
-    mkDemods = basedir: list: lib.genAttrs list (name: mkDemod {inherit name basedir;});
+    mkDemodsGroup = basedir: list: lib.genAttrs list (name: mkDemod {inherit name basedir;});
   in
-    (mkDemods "demod/mod" [
+    (mkDemodsGroup "demod/mod" [
       "rs41mod"
       "dfm09mod"
       "m10mod"
@@ -24,14 +43,14 @@
       "mts01mod"
       "iq_dec"
     ])
-    // (mkDemods "weathex" ["weathex301d"])
-    // (mkDemods "mk2a" ["mk2a1680mod"])
-    // (mkDemods "imet" ["imet4iq"])
-    // (mkDemods "utils" ["fsk_demod"])
-    // (mkDemods "scan" ["dft_detect"]);
+    // (mkDemodsGroup "weathex" ["weathex301d"])
+    // (mkDemodsGroup "mk2a" ["mk2a1680mod"])
+    // (mkDemodsGroup "imet" ["imet4iq"])
+    // (mkDemodsGroup "utils" ["fsk_demod"])
+    // (mkDemodsGroup "scan" ["dft_detect"]);
 in
   demods
   // rec {
-    radiosonde-auto-rx = pkgs.callPackage ./autorx.nix {inherit radiosondeSrc demods;};
+    radiosonde-auto-rx = pkgs.callPackage ./radiosonde-auto-rx.nix {inherit radiosondeSrc demods;};
     default = radiosonde-auto-rx;
   }
