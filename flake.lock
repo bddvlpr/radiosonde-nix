@@ -46,10 +46,28 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/a5d394176e64ab29c852d03346c1fc9b0b7d33eb.tar.gz"
       }
     },
+    "radiosonde-auto-rx": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1725795048,
+        "narHash": "sha256-xZHeYjV6vS8I4MIe7PLowSI5mjF85ME45d/ZDpAI0k0=",
+        "owner": "projecthorus",
+        "repo": "radiosonde_auto_rx",
+        "rev": "409e2088ac486232a25b584414eb723661d0d3b6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "projecthorus",
+        "ref": "testing",
+        "repo": "radiosonde_auto_rx",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "radiosonde-auto-rx": "radiosonde-auto-rx"
       }
     }
   },

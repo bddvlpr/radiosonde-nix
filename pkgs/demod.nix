@@ -20,5 +20,7 @@
           mkdir -p $out/bin
           install -Dm744 ${name} $out/bin
         '';
+
+        meta.mainProgram = name;
       });
 }
